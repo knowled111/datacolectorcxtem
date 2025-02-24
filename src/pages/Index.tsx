@@ -43,17 +43,19 @@ const Index = () => {
       setIsLoading(true);
       console.log("Form data:", data);
       
-      // Simulando uma chamada à API
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Aqui você faria a chamada real à API
-      // const response = await fetch('http://localhost:3000/api/users/login', {
-      //   method: 'POST',
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //   },
-      //   body: JSON.stringify(data),
-      // });
+      const response = await fetch('http://localhost:3000/api/users/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (!response.ok) {
+        throw new Error('Erro ao salvar os dados');
+      }
+
+      const result = await response.json();
 
       toast({
         title: "Sucesso!",
