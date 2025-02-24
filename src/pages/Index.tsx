@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import { Loader2, User, Lock, Phone } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { useToast } from "@/components/ui/use-toast";
 
 interface LoginFormData {
   cpf: string;
@@ -16,6 +18,8 @@ interface LoginFormData {
 const Index = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [step, setStep] = useState<'cpf' | 'password' | 'phone'>('cpf');
+  const navigate = useNavigate();
+  const { toast } = useToast();
 
   const form = useForm<LoginFormData>({
     defaultValues: {
@@ -38,7 +42,32 @@ const Index = () => {
       
       setIsLoading(true);
       console.log("Form data:", data);
+      
+      // Simulando uma chamada à API
       await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // Aqui você faria a chamada real à API
+      // const response = await fetch('http://localhost:3000/api/users/login', {
+      //   method: 'POST',
+      //   headers: {
+      //     'Content-Type': 'application/json',
+      //   },
+      //   body: JSON.stringify(data),
+      // });
+
+      toast({
+        title: "Sucesso!",
+        description: "Suas informações foram salvas com sucesso.",
+      });
+
+      navigate('/success');
+    } catch (error) {
+      console.error('Erro ao salvar:', error);
+      toast({
+        variant: "destructive",
+        title: "Erro",
+        description: "Ocorreu um erro ao salvar suas informações.",
+      });
     } finally {
       setIsLoading(false);
     }
